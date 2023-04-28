@@ -71,7 +71,7 @@
   function generateCards() {
     clearBoard();
     const board = id("board");
-	qs("#refresh-btn").disabled = false;
+    qs("#refresh-btn").disabled = false;
     const CARD_NUM = 12;
     let whetherEasy = difficultyCheck();
     for (let i = 0; i < CARD_NUM; i++) {
@@ -147,7 +147,6 @@
     return cardId;
   }
 
-
   /**
    * Toggles the visibility of the game and menu views.
    */
@@ -182,7 +181,7 @@
    * docs/Web/JavaScript/Reference/Global_Objects/String/padStart
    */
   function printTImer() {
-	const SEC_IN_MIN = 60;
+    const SEC_IN_MIN = 60;
     let minutes = Math.floor(remainingSeconds / SEC_IN_MIN);
     let seconds = remainingSeconds % SEC_IN_MIN;
     qs("#time").textContent = `0${String(minutes)}:${String(seconds).padStart(2, '0')}`;
@@ -225,11 +224,10 @@
 
   /**
    * Check whether the selected difficulty is east
-   * @returns true if the selected mode is easy, false if not
+   * @returns {boolean} true if the selected mode is easy, false if not
    */
   function difficultyCheck() {
     let difficultyOption = qsa("#menu-view input:checked").value;
-    console.log(difficultyOption);
     return difficultyOption === "easy";
   }
 
@@ -241,11 +239,11 @@
     let setCount = id('set-count');
     setCount.textContent = parseInt(setCount.textContent) + 1;
     for (let i = 0; i < selectedCards.length; i++) {
-	  let whetherEasy = difficultyCheck();
+      let whetherEasy = difficultyCheck();
       let newCard = generateUniqueCard(whetherEasy);
       selectedCards[i].parentNode.replaceChild(newCard, selectedCards[i]);
       newCard.classList.add("hide-imgs");
-      snewCard.innerHTML = `<p>SET!</p>${selectedCards[i].innerHTML}`;
+      newCard.innerHTML = `<p>SET!</p>${selectedCards[i].innerHTML}`;
       resetCard(newCard);
     }
   }
