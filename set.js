@@ -1,3 +1,13 @@
+/*
+ * Name: Hanyang Yu
+ * Date: April 27, 2023
+ * Section: CSE 154 AF
+ * TA: Donovan Kong && Sonia Saitawdekar
+ * This is the JS to implement the Card Game to the set.html.
+ * It is a game that the player can select cards for certian rules,
+ * if they success, they will receive 1 count as credit.
+ * There are different time length and difficulty provided.
+ */
 "use strict";
 (function() {
 	let timerId = null;
@@ -24,32 +34,35 @@
 	function isASet(selected) {
 		let attributes = [];
 		for (let i = 0; i < selected.length; i++) {
-			attributes.push(selected[i].id.split("-"));
+		  attributes.push(selected[i].id.split("-"));
 		}
 		for (let i = 0; i < attributes[0].length; i++) {
-			let diff = attributes[0][i] !== attributes[1][i] &&
-				attributes[1][i] !== attributes[2][i] &&
-				attributes[0][i] !== attributes[2][i];
-			let same = attributes[0][i] === attributes[1][i] &&
-				attributes[1][i] === attributes[2][i];
-			if (!(same || diff)) {
-				return false;
-			}
+		  let diff = attributes[0][i] !== attributes[1][i] &&
+					attributes[1][i] !== attributes[2][i] &&
+					attributes[0][i] !== attributes[2][i];
+		  let same = attributes[0][i] === attributes[1][i] &&
+						attributes[1][i] === attributes[2][i];
+		  if (!(same || diff)) {
+			return false;
+		  }
 		}
 		return true;
-	}
+	  }
 
 	function reset() {
-		qs("#refresh-btn").disabled = true;
+		endGame();
+		qs("#refresh-btn").disabled = false;
 		let setCount = id('set-count');
-		setCount.textContent = 0	;
+		setCount.textContent = 0;
 	}
 
 	function generateCards() {
-		clearBoard;
+		clearBoard();
 		const board = id("board");
-		for (let i = 0; i < 12; i++) {
-		  const card = generateUniqueCard(isEasy);
+		const CARD_NUM = 12;
+		let whetherEasy = difficultyCheck();
+		for (let i = 0; i < CARD_NUM; i++) {
+		  const card = generateUniqueCard(whetherEasy);
 		  board.appendChild(card);
 		}
 	}
@@ -62,8 +75,8 @@
 
 	function generateRandomAttributes(isEasy) {
 		const STYLE = ['solid', 'outline', 'striped'];
-		const SHAPE = ['green', 'purple', 'red'];
-		const COLOR = ['diamond', 'oval', 'squiggle'];
+		const SHAPE = ['diamond', 'oval', 'squiggle'];
+		const COLOR = ['green', 'purple', 'red'];
 		const COUNT = [1, 2, 3];
 		let styleIndex = isEasy ? 0 : Math.floor(Math.random() * STYLE.length);
 		let shapeIndex = Math.floor(Math.random() * SHAPE.length);
@@ -79,7 +92,7 @@
 		card.id = cardId;
 		card.classList.add("card");
 		card.addEventListener("click", cardSelected);
-		for (let i = 0; i < parseInt(count, 10); i++) {
+		for (let i = 0; i < count; i++) {
 			let img = document.createElement("img");
 			img.src = `img/${style}-${shape}-${color}.png`;
 			img.alt = cardId;
@@ -107,8 +120,7 @@
 	}
 
 	function startTimer() {
-		let timeOption = qs("#menu-view article select").value;
-		remainingSeconds = parseInt(timeOption, 10);
+		remainingSeconds = qs("#menu-view article select").value;
 		printTImer();
 		timerId = setInterval(advanceTimer, 1000);
 	}
@@ -116,7 +128,7 @@
 	function advanceTimer() {
 		remainingSeconds--;
 		printTImer();
-		if (remainingSeconds === 0) {
+		if (remainingSeconds == 0) {
 		  endGame();
 		}
 	}
@@ -124,11 +136,12 @@
 	function printTImer() {
 		let minutes = Math.floor(remainingSeconds / 60);
 		let seconds = remainingSeconds % 60;
-		document.querySelector("#time").textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+		qs("#time").textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 	}
 
 	function endGame() {
 		clearInterval(timerId);
+		timerId = null;
 		document.querySelector("#back-btn").addEventListener("click", () => {
 		qs("#refresh-btn").disabled = true;
 		let cards = qsa('.card');
@@ -141,55 +154,53 @@
 
 	function cardSelected() {
 		this.classList.toggle("selected");
-		let selectedCards = qsa(".card.selected");
+		let selectedCards = Array.from(qsa(".card.selected"));
 		if (selectedCards.length === 3) {
-		let cardIds = Array.from(selectedCards).map(card => card.id);
-
-		if (isASet(cardIds)) {
-			handleSet(selectedCards);
-		} else {
-			handleNotASet(selectedCards);
-		}
-		setTimeout(() => {
+		  if (isASet(selectedCards)) {
+			successSelection(selectedCards);
+		  } else {
+			failureselection(selectedCards);
+		  }
+		  setTimeout(() => {
 			selectedCards.forEach(card => {
-			card.classList.remove("selected");
+			  card.classList.remove("selected");
 			});
-		}, 1000);
+		  }, 1000);
 		}
 	}
 
-	function isEasy() {
+	function difficultyCheck() {
+		console.log("ez?");
 		let difficultyOption = qsa("#menu-view input:checked").value;
 		return difficultyOption === "easy";
 	}
 
-	function handleSet(selectedCards) {
-		selectedCards.forEach(card => {
-			card.classList.add("hide-imgs");
-			let newCard = generateUniqueCard(isEasy); // 根据您的游戏实现使用正确的参数
+	function successSelection(selectedCards) {
+		for (let i = 0; i < selectedCards.length; i++) {
+			selectedCards[i].classList.add("hide-imgs");
+			let whetherEasy = difficultyCheck();
+			let newCard = generateUniqueCard(whetherEasy);
 			newCard.innerHTML = `<p>SET!</p>${newCard.innerHTML}`;
-			card.parentNode.replaceChild(newCard, card);
+			selectedCards[i].parentNode.replaceChild(newCard, selectedCards[i]);
 
 			setTimeout(() => {
 			newCard.classList.remove("hide-imgs");
 			newCard.removeChild(newCard.querySelector("p"));
 			}, 1000);
-		});
-
-		// 增加找到的集合计数
+		}
 		let setCount = id('set-count');
 		setCount.textContent += 1;
 	}
 
-	function handleNotASet(selectedCards) {
-		selectedCards.forEach(card => {
-		card.classList.add("hide-imgs");
-		card.innerHTML = `<p>Not a Set</p>${card.innerHTML}`;
-		setTimeout(() => {
-		card.classList.remove("hide-imgs");
-		card.removeChild(card.querySelector("p"));
-		}, 1000);
-	});
+	function failureselection(selectedCards) {
+		for (let i = 0; i < selectedCards.length; i++) {
+			selectedCards[i].classList.add("hide-imgs");
+			selectedCards[i].innerHTML = `<p>Not a Set</p>${selectedCards[i].innerHTML}`;
+			setTimeout(() => {
+				selectedCards[i].classList.remove("hide-imgs");
+				selectedCards[i].removeChild(selectedCards[i].querySelector("p"));
+			}, 1000);
+		}
 	}
 
 	function id(idName) {
