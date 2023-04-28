@@ -9,7 +9,9 @@
 		id('start-btn').addEventListener('click', toggleViews);
 		id('start-btn').addEventListener('click', startTimer);
 		id('start-btn').addEventListener('click', generateCards);
+		id('refresh-btn').addEventListener('click', generateCards);
 		id('back-btn').addEventListener('click', toggleViews);
+		id('back-btn').addEventListener('click', reset);
 	}
 
 	/**
@@ -37,10 +39,24 @@
 		return true;
 	}
 
+	function reset() {
+		qs("#refresh-btn").disabled = true;
+		let setCount = id('set-count');
+		setCount.textContent = 0	;
+	}
+
 	function generateCards() {
-		for(let i = 0; i < 12; i++) {
-			generateUniqueCard(isEasy);
+		clearBoard;
+		const board = id("board");
+		for (let i = 0; i < 12; i++) {
+		  const card = generateUniqueCard(isEasy);
+		  board.appendChild(card);
 		}
+	}
+
+	function clearBoard() {
+		const board = id('board');
+		board.innerHTML = '';
 	}
 
 
@@ -112,19 +128,14 @@
 	}
 
 	function endGame() {
-		// 停止并清除计时器
-		clearInterval(timer);
-
-		// 禁用当前视图，直到点击“返回主界面”按钮
+		clearInterval(timerId);
 		document.querySelector("#back-btn").addEventListener("click", () => {
-		  // 清除当前选择的卡片
-		  // ...（这部分取决于您的 cardSelected() 实现）
-
-		  // 禁用“刷新游戏板”按钮
-		  document.querySelector("#refresh-btn").disabled = true;
-
-		  // 禁用卡片点击功能
-		  // ...（这部分取决于您的 cardSelected() 实现）
+		qs("#refresh-btn").disabled = true;
+		let cards = qsa('.card');
+		for (let i = 0; i < cards.length; i++) {
+			cards[i].removeEventListener('click', cardSelected);
+			cards[i].classList.remove("selected");
+		}
 	});
 	}
 
@@ -166,8 +177,8 @@
 		});
 
 		// 增加找到的集合计数
-		let setCount = document.querySelector("#set-count");
-		setCount.textContent = parseInt(setCount.textContent, 10) + 1;
+		let setCount = id('set-count');
+		setCount.textContent += 1;
 	}
 
 	function handleNotASet(selectedCards) {
