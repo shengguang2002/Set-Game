@@ -21,11 +21,11 @@
    */
   function init() {
     id('start-btn').addEventListener('click', toggleViews);
-	id('start-btn').addEventListener('click', startTimer);
-	id('start-btn').addEventListener('click', generateCards);
-	id('refresh-btn').addEventListener('click', generateCards);
-	id('back-btn').addEventListener('click', toggleViews);
-	id('back-btn').addEventListener('click', reset);
+    id('start-btn').addEventListener('click', startTimer);
+    id('start-btn').addEventListener('click', generateCards);
+    id('refresh-btn').addEventListener('click', generateCards);
+    id('back-btn').addEventListener('click', toggleViews);
+    id('back-btn').addEventListener('click', reset);
   }
 
   /**
@@ -36,145 +36,144 @@
    *@return {boolean} true if valid set false otherwise.
    */
   function isASet(selected) {
-	let attributes = [];
-	for (let i = 0; i < selected.length; i++) {
+    let attributes = [];
+    for (let i = 0; i < selected.length; i++) {
 	  attributes.push(selected[i].id.split("-"));
 	}
-	for (let i = 0; i < attributes[0].length; i++) {
-	  let diff = attributes[0][i] !== attributes[1][i] &&
-	  attributes[1][i] !== attributes[2][i] &&
-	  attributes[0][i] !== attributes[2][i];
-	  let same = attributes[0][i] === attributes[1][i] &&
-	  attributes[1][i] === attributes[2][i];
-	  if (!(same || diff)) {
-		return false;
-	  }
-	}
-	return true;
+    for (let i = 0; i < attributes[0].length; i++) {
+      let diff = attributes[0][i] !== attributes[1][i] &&
+      attributes[1][i] !== attributes[2][i] &&
+      attributes[0][i] !== attributes[2][i];
+      let same = attributes[0][i] === attributes[1][i] &&
+      attributes[1][i] === attributes[2][i];
+      if (!(same || diff)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
    *reset the game setting when the "Back to Main" button is clicked
    */
   function reset() {
-	endGame();
-	qs("#refresh-btn").disabled = false;
-	let setCount = id('set-count');
-	setCount.textContent = 0;
+    endGame();
+    qs("#refresh-btn").disabled = false;
+    let setCount = id('set-count');
+    setCount.textContent = 0;
   }
 
   function generateCards() {
-	clearBoard();
-	const board = id("board");
-	const CARD_NUM = 12;
-	let whetherEasy = difficultyCheck();
-	for (let i = 0; i < CARD_NUM; i++) {
-	  const card = generateUniqueCard(whetherEasy);
-	  board.appendChild(card);
-	}
+    clearBoard();
+    const board = id("board");
+    const CARD_NUM = 12;
+    let whetherEasy = difficultyCheck();
+    for (let i = 0; i < CARD_NUM; i++) {
+      const card = generateUniqueCard(whetherEasy);
+      board.appendChild(card);
+    }
   }
 
   function clearBoard() {
-	const board = id('board');
-	board.innerHTML = '';
+    const board = id('board');
+    board.innerHTML = '';
   }
 
 
   function generateRandomAttributes(isEasy) {
-	const STYLE = ['solid', 'outline', 'striped'];
-	const SHAPE = ['diamond', 'oval', 'squiggle'];
-	const COLOR = ['green', 'purple', 'red'];
-	const COUNT = [1, 2, 3];
-	let styleIndex = isEasy ? 0 : Math.floor(Math.random() * STYLE.length);
-	let shapeIndex = Math.floor(Math.random() * SHAPE.length);
-	let colorIndex = Math.floor(Math.random() * COLOR.length);
-	let countIndex = Math.floor(Math.random() * COUNT.length);
-	return [STYLE[styleIndex], SHAPE[shapeIndex], COLOR[colorIndex], COUNT[countIndex]];
+    const STYLE = ['solid', 'outline', 'striped'];
+    const SHAPE = ['diamond', 'oval', 'squiggle'];
+    const COLOR = ['green', 'purple', 'red'];
+    const COUNT = [1, 2, 3];
+    let styleIndex = isEasy ? 0 : Math.floor(Math.random() * STYLE.length);
+    let shapeIndex = Math.floor(Math.random() * SHAPE.length);
+    let colorIndex = Math.floor(Math.random() * COLOR.length);
+    let countIndex = Math.floor(Math.random() * COUNT.length);
+    return [STYLE[styleIndex], SHAPE[shapeIndex], COLOR[colorIndex], COUNT[countIndex]];
   }
 
   function generateUniqueCard(isEasy) {
-	let cardId = generateUniqueCardId(isEasy);
-	let [style, shape, color, count] = cardId.split('-');
-	let card = document.createElement("div");
-	card.id = cardId;
-	card.classList.add("card");
-	card.addEventListener("click", cardSelected);
-	for (let i = 0; i < count; i++) {
+    let cardId = generateUniqueCardId(isEasy);
+    let [style, shape, color, count] = cardId.split('-');
+    let card = document.createElement("div");
+    card.id = cardId;
+    card.classList.add("card");
+    card.addEventListener("click", cardSelected);
+    for (let i = 0; i < count; i++) {
       let img = document.createElement("img");
-	  img.src = `img/${style}-${shape}-${color}.png`;
-	  img.alt = cardId;
-	  card.appendChild(img);
+      img.src = `img/${style}-${shape}-${color}.png`;
+      img.alt = cardId;
+      card.appendChild(img);
 	}
 	return card;
   }
 
   function generateUniqueCardId(isEasy) {
-	let unique = false;
-	let cardId;
-	while (!unique) {
-	  let attributes = generateRandomAttributes(isEasy);
-	  cardId = attributes.join('-');
-	  if (!document.getElementById(cardId)) {
-		unique = true;
-	  }
-	}
-	return cardId;
+    let unique = false;
+    let cardId;
+    while (!unique) {
+      let attributes = generateRandomAttributes(isEasy);
+      cardId = attributes.join('-');
+      if (!document.getElementById(cardId)) {
+        unique = true;
+      }
+    }
+    return cardId;
   }
 
   function toggleViews() {
-	id('game-view').classList.toggle('hidden');
-	id('menu-view').classList.toggle('hidden');
+    id('game-view').classList.toggle('hidden');
+    id('menu-view').classList.toggle('hidden');
   }
 
   function startTimer() {
-	remainingSeconds = qs("#menu-view article select").value;
-	printTImer();
-	timerId = setInterval(advanceTimer, ONE_SECOND);
+    remainingSeconds = qs("#menu-view article select").value;
+    printTImer();
+    timerId = setInterval(advanceTimer, ONE_SECOND);
   }
 
   function advanceTimer() {
-	remainingSeconds--;
-	printTImer();
-	if (remainingSeconds == 0) {
+    remainingSeconds--;
+    printTImer();
+    if (remainingSeconds == 0) {
       endGame();
-	}
+    }
   }
 
   function printTImer() {
-	let minutes = Math.floor(remainingSeconds / 60);
-	let seconds = remainingSeconds % 60;
-	qs("#time").textContent = `${String(minutes).padStart(2, '0')}
-	:${String(seconds).padStart(2, '0')}`;
+    let minutes = Math.floor(remainingSeconds / 60);
+    let seconds = remainingSeconds % 60;
+    qs("#time").textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   }
 
   function endGame() {
-	clearInterval(timerId);
-	timerId = null;
-	document.querySelector("#back-btn").addEventListener("click", () => {
-	  qs("#refresh-btn").disabled = true;
-	  let cards = qsa('.card');
-	  for (let i = 0; i < cards.length; i++) {
-		cards[i].removeEventListener('click', cardSelected);
-		cards[i].classList.remove("selected");
-	  }
-	});
+    clearInterval(timerId);
+    timerId = null;
+    document.querySelector("#back-btn").addEventListener("click", () => {
+      qs("#refresh-btn").disabled = true;
+      let cards = qsa('.card');
+      for (let i = 0; i < cards.length; i++) {
+        cards[i].removeEventListener('click', cardSelected);
+        cards[i].classList.remove("selected");
+      }
+    });
   }
 
   function cardSelected() {
-	this.classList.toggle("selected");
-	let selectedCards = Array.from(qsa(".card.selected"));
-	if (selectedCards.length === 3) {
-	  if (isASet(selectedCards)) {
-	    successSelection(selectedCards);
-	  } else {
-		failureselection(selectedCards);
-	  }
-	  setTimeout(() => {
-		for (let i = 0; i < selectedCards.length; i++) {
-		  selectedCards[i].classList.remove("selected");
+    this.classList.toggle("selected");
+    let selectedCards = Array.from(qsa(".card.selected"));
+    if (selectedCards.length === 3) {
+      if (isASet(selectedCards)) {
+        successSelection(selectedCards);
+      } else {
+        failureselection(selectedCards);
+      }
+      setTimeout(() => {
+        for (let i = 0; i < selectedCards.length; i++) {
+          selectedCards[i].classList.remove("selected");
 		}
-	  }, ONE_SECOND);
-	}
+      }, ONE_SECOND);
+    }
   }
 
   /**
@@ -182,9 +181,9 @@
    * @returns true if the selected mode is easy, false if not
    */
   function difficultyCheck() {
-	console.log("ez?");
-	let difficultyOption = qsa("#menu-view input:checked").value;
-	return difficultyOption === "easy";
+    let difficultyOption = qsa("#menu-view input:checked").value;
+    console.log(difficultyOption);
+    return difficultyOption === "easy";
   }
 
   /**
@@ -192,16 +191,16 @@
    * @param {Array} selectedCards Array of card that are selected that are set
    */
   function successSelection(selectedCards) {
-	for (let i = 0; i < selectedCards.length; i++) {
-	  selectedCards[i].classList.add("hide-imgs");
-	  selectedCards[i].innerHTML = `<p>SET!</p>${selectedCards[i].innerHTML}`;
-	  resetCard(selectedCards[i]);
-	  let whetherEasy = difficultyCheck();
-	  let newCard = generateUniqueCard(whetherEasy);
-	  selectedCards[i].parentNode.replaceChild(newCard, selectedCards[i]);
-	}
-	let setCount = id('set-count');
-	setCount.textContent += 1;
+    for (let i = 0; i < selectedCards.length; i++) {
+      selectedCards[i].classList.add("hide-imgs");
+      selectedCards[i].innerHTML = `<p>SET!</p>${selectedCards[i].innerHTML}`;
+      resetCard(selectedCards[i]);
+      let whetherEasy = difficultyCheck();
+      let newCard = generateUniqueCard(whetherEasy);
+      selectedCards[i].parentNode.replaceChild(newCard, selectedCards[i]);
+    }
+    let setCount = id('set-count');
+    setCount.textContent += 1;
   }
 
   /**
@@ -209,11 +208,11 @@
    * @param {Array} selectedCards: Array of card that are selected but are not set
    */
   function failureselection(selectedCards) {
-	for (let i = 0; i < selectedCards.length; i++) {
-	  selectedCards[i].classList.add("hide-imgs");
-	  selectedCards[i].innerHTML = `<p>Not a Set</p>${selectedCards[i].innerHTML}`;
-	  resetCard(selectedCards[i]);
-	}
+    for (let i = 0; i < selectedCards.length; i++) {
+      selectedCards[i].classList.add("hide-imgs");
+      selectedCards[i].innerHTML = `<p>Not a Set</p>${selectedCards[i].innerHTML}`;
+      resetCard(selectedCards[i]);
+    }
   }
 
   /**
@@ -221,10 +220,10 @@
    * @param {div} card: A div object symbolizes the card in the game
    */
   function resetCard(card) {
-	setTimeout(() => {
-		card.classList.remove("hide-imgs");
-		card.removeChild(selectedCards[i].querySelector("p"));
-	}, ONE_SECOND);
+    setTimeout(() => {
+      card.classList.remove("hide-imgs");
+      card.removeChild(selectedCards[i].querySelector("p"));
+    }, ONE_SECOND);
   }
 
   /**
@@ -233,7 +232,7 @@
    * @returns An Element object that classified as this id.
    */
   function id(idName) {
-	return document.getElementById(idName);
+    return document.getElementById(idName);
   }
 
   /**
@@ -243,7 +242,7 @@
    *  the specified set of CSS selectors, or null is returned if there are no matches.
    */
   function qsa(query) {
-	return document.querySelectorAll(query);
+    return document.querySelectorAll(query);
   }
 
   /**
