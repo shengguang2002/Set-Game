@@ -227,7 +227,8 @@
    * @returns {boolean} true if the selected mode is easy, false if not
    */
   function difficultyCheck() {
-    let difficultyOption = qsa("#menu-view input:checked").value;
+    let difficultyOption = qs("#menu-view input[name=diff]:checked").value;
+	console.log(difficultyOption);
     return difficultyOption === "easy";
   }
 
