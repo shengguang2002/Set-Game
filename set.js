@@ -10,11 +10,15 @@
  */
 "use strict";
 (function() {
+  const ONE_SECOND = 1000；
   let timerId = null;
   let remainingSeconds = null;
 
   window.addEventListener("load", init);
 
+  /**
+   *Initiate after window is loarded
+   */
   function init() {
     id('start-btn').addEventListener('click', toggleViews);
 	id('start-btn').addEventListener('click', startTimer);
@@ -25,11 +29,11 @@
   }
 
   /**
-   * Checks to see if the three selected cards make up a valid set. This is done by comparing each
-   * of the type of attribute against the other two cards. If each four attributes for each card are
-   * either all the same or all different, then the cards make a set. If not, they do not make a set
-   * @param {DOMList} selected - list of all selected cards to check if a set.
-   * @return {boolean} true if valid set false otherwise.
+   *Checks to see if the three selected cards make up a valid set. This is done by comparing each
+   *of the type of attribute against the other two cards. If each four attributes for each card are
+   *either all the same or all different, then the cards make a set. If not, they do not make a set
+   *@param {DOMList} selected - list of all selected cards to check if a set.
+   *@return {boolean} true if valid set false otherwise.
    */
   function isASet(selected) {
 	let attributes = [];
@@ -49,6 +53,9 @@
 	return true;
   }
 
+  /**
+   *reset the game setting when the "Back to Main" button is clicked
+   */
   function reset() {
 	endGame();
 	qs("#refresh-btn").disabled = false;
@@ -122,7 +129,7 @@
   function startTimer() {
 	remainingSeconds = qs("#menu-view article select").value;
 	printTImer();
-	timerId = setInterval(advanceTimer, 1000);
+	timerId = setInterval(advanceTimer, ONE_SECOND);
   }
 
   function advanceTimer() {
@@ -166,7 +173,7 @@
 		for (let i = 0; i < selectedCards.length; i++) {
 		  selectedCards[i].classList.remove("selected");
 		}
-	  }, 1000);
+	  }, ONE_SECOND);
 	}
   }
 
@@ -189,6 +196,10 @@
 	setCount.textContent += 1;
   }
 
+  /**
+   * Do following move if the selected cards cannot be a set.
+   * @param {Array} selectedCards: Array of card that are selected but are not set
+   */
   function failureselection(selectedCards) {
 	for (let i = 0; i < selectedCards.length; i++) {
 	  selectedCards[i].classList.add("hide-imgs");
@@ -197,21 +208,42 @@
 	}
   }
 
+  /**
+   * Reset the card that visibilize the images and remove all the paragraph in side the card
+   * @param {div} card: A div object symbolizes the card in the game
+   */
   function resetCard(card) {
 	setTimeout(() => {
 		card.classList.remove("hide-imgs");
 		card.removeChild(selectedCards[i].querySelector("p"));
-	}, 1000);
+	}, ONE_SECOND);
   }
 
+  /**
+   * A function that simplify calling document.getElementById
+   * @param {id} idName: An id name
+   * @returns An Element object that classified as this id.
+   */
   function id(idName) {
 	return document.getElementById(idName);
   }
 
+  /**
+   * A function that simplify calling document.querySelectorAll
+   * @param {selectors} query: A query of selectors
+   * @returns An Element object representing the all elements in the document that matches
+   *  the specified set of CSS selectors, or null is returned if there are no matches.
+   */
   function qsa(query) {
 	return document.querySelectorAll(query);
   }
 
+  /**
+   * A function that simplify calling document.querySelector
+   * @param {selectors} query: A query of selectors
+   * @returns An Element object representing the first element in the document that matches
+   *  the specified set of CSS selectors, or null is returned if there are no matches.
+   */
   function qs(query) {
     return document.querySelector(query);
   }
