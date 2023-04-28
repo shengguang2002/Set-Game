@@ -228,7 +228,6 @@
    */
   function difficultyCheck() {
     let difficultyOption = qs("#menu-view input[name=diff]:checked").value;
-	console.log(difficultyOption);
     return difficultyOption === "easy";
   }
 
