@@ -66,6 +66,7 @@
   function generateCards() {
     clearBoard();
     const board = id("board");
+	qs("#refresh-btn").disabled = false;
     const CARD_NUM = 12;
     let whetherEasy = difficultyCheck();
     for (let i = 0; i < CARD_NUM; i++) {
@@ -159,6 +160,9 @@
     });
   }
 
+  /**
+   * 
+   */
   function cardSelected() {
     this.classList.toggle("selected");
     let selectedCards = Array.from(qsa(".card.selected"));
@@ -222,7 +226,7 @@
   function resetCard(card) {
     setTimeout(() => {
       card.classList.remove("hide-imgs");
-      card.removeChild(selectedCards[i].querySelector("p"));
+      card.removeChild(card.querySelector("p"));
     }, ONE_SECOND);
   }
 
