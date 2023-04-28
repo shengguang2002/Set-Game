@@ -136,7 +136,8 @@
   function printTImer() {
 	let minutes = Math.floor(remainingSeconds / 60);
 	let seconds = remainingSeconds % 60;
-	qs("#time").textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+	qs("#time").textContent = `${String(minutes).padStart(2, '0')}
+	:${String(seconds).padStart(2, '0')}`;
   }
 
   function endGame() {
@@ -178,14 +179,11 @@
   function successSelection(selectedCards) {
 	for (let i = 0; i < selectedCards.length; i++) {
 	  selectedCards[i].classList.add("hide-imgs");
+	  selectedCards[i].innerHTML = `<p>SET!</p>${selectedCards[i].innerHTML}`;
+	  resetCard(selectedCards[i]);
 	  let whetherEasy = difficultyCheck();
 	  let newCard = generateUniqueCard(whetherEasy);
-	  newCard.innerHTML = `<p>SET!</p>${newCard.innerHTML}`;
 	  selectedCards[i].parentNode.replaceChild(newCard, selectedCards[i]);
-	  setTimeout(() => {
-	    newCard.classList.remove("hide-imgs");
-	    newCard.removeChild(newCard.querySelector("p"));
-	  }, 1000);
 	}
 	let setCount = id('set-count');
 	setCount.textContent += 1;
@@ -195,11 +193,15 @@
 	for (let i = 0; i < selectedCards.length; i++) {
 	  selectedCards[i].classList.add("hide-imgs");
 	  selectedCards[i].innerHTML = `<p>Not a Set</p>${selectedCards[i].innerHTML}`;
-	  setTimeout(() => {
-		selectedCards[i].classList.remove("hide-imgs");
-		selectedCards[i].removeChild(selectedCards[i].querySelector("p"));
-	  }, 1000);
+	  resetCard(selectedCards[i]);
 	}
+  }
+
+  function resetCard(card) {
+	setTimeout(() => {
+		card.classList.remove("hide-imgs");
+		card.removeChild(selectedCards[i].querySelector("p"));
+	}, 1000);
   }
 
   function id(idName) {
