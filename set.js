@@ -150,19 +150,14 @@
   function endGame() {
     clearInterval(timerId);
     timerId = null;
-    document.querySelector("#back-btn").addEventListener("click", () => {
-      qs("#refresh-btn").disabled = true;
-      let cards = qsa('.card');
-      for (let i = 0; i < cards.length; i++) {
-        cards[i].removeEventListener('click', cardSelected);
-        cards[i].classList.remove("selected");
-      }
-    });
+	qs("#refresh-btn").disabled = true;
+	let cards = qsa('.card');
+	for (let i = 0; i < cards.length; i++) {
+	  cards[i].removeEventListener('click', cardSelected);
+	  cards[i].classList.remove("selected");
+	}
   }
 
-  /**
-   * 
-   */
   function cardSelected() {
     this.classList.toggle("selected");
     let selectedCards = Array.from(qsa(".card.selected"));
@@ -195,6 +190,8 @@
    * @param {Array} selectedCards Array of card that are selected that are set
    */
   function successSelection(selectedCards) {
+	let setCount = id('set-count');
+    setCount.textContent += 1;
     for (let i = 0; i < selectedCards.length; i++) {
       selectedCards[i].classList.add("hide-imgs");
       selectedCards[i].innerHTML = `<p>SET!</p>${selectedCards[i].innerHTML}`;
@@ -203,8 +200,6 @@
       let newCard = generateUniqueCard(whetherEasy);
       selectedCards[i].parentNode.replaceChild(newCard, selectedCards[i]);
     }
-    let setCount = id('set-count');
-    setCount.textContent += 1;
   }
 
   /**
@@ -233,7 +228,7 @@
   /**
    * A function that simplify calling document.getElementById
    * @param {id} idName: An id name
-   * @returns An Element object that classified as this id.
+   * @returns {Element} An Element object that classified as this id.
    */
   function id(idName) {
     return document.getElementById(idName);
@@ -241,9 +236,9 @@
 
   /**
    * A function that simplify calling document.querySelectorAll
-   * @param {selectors} query: A query of selectors
-   * @returns An Element object representing the all elements in the document that matches
-   *  the specified set of CSS selectors, or null is returned if there are no matches.
+   * @param {selectors} query: A query of selector
+   * @returns {NodeList} An Element object representing the all elements in the document
+   * that matches the specified set of CSS selectors, or null is returned if there are no matches.
    */
   function qsa(query) {
     return document.querySelectorAll(query);
@@ -252,8 +247,9 @@
   /**
    * A function that simplify calling document.querySelector
    * @param {selectors} query: A query of selectors
-   * @returns An Element object representing the first element in the document that matches
-   *  the specified set of CSS selectors, or null is returned if there are no matches.
+   * @returns {Element} An Element object representing the first element in the
+   * document that matches the specified set of CSS selectors, or null is returned
+   * if there are no matches.
    */
   function qs(query) {
     return document.querySelector(query);
