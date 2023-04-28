@@ -17,7 +17,7 @@
   window.addEventListener("load", init);
 
   /**
-   *Initiate after window is loarded
+   *Initiate after window is loarded, creating different event listner for different bottom
    */
   function init() {
     id('start-btn').addEventListener('click', toggleViews);
@@ -38,8 +38,8 @@
   function isASet(selected) {
     let attributes = [];
     for (let i = 0; i < selected.length; i++) {
-	  attributes.push(selected[i].id.split("-"));
-	}
+      attributes.push(selected[i].id.split("-"));
+    }
     for (let i = 0; i < attributes[0].length; i++) {
       let diff = attributes[0][i] !== attributes[1][i] &&
       attributes[1][i] !== attributes[2][i] &&
@@ -54,7 +54,8 @@
   }
 
   /**
-   *reset the game setting when the "Back to Main" button is clicked
+   * Resets the game settings when the "Back to Main" button is clicked.
+   * Stops the game, enables the "Refresh Board" button, and resets the set count.
    */
   function reset() {
     endGame();
@@ -63,6 +64,10 @@
     setCount.textContent = 0;
   }
 
+  /**
+   * Generates cards for the game board.
+   * Clears the board, determines the difficulty, and creates the specified number of cards.
+   */
   function generateCards() {
     clearBoard();
     const board = id("board");
@@ -75,12 +80,20 @@
     }
   }
 
+  /**
+   * Clears the game board by removing all inner content.
+   */
   function clearBoard() {
     const board = id('board');
     board.innerHTML = '';
   }
 
-
+  /**
+   * Generates random attributes for a card based on the specified difficulty.
+   * @param {boolean} isEasy - If true, the "Easy" difficulty is selected,
+   * else "Standard" difficulty.
+   * @return {Array} An array of randomly selected attributes for the card.
+   */
   function generateRandomAttributes(isEasy) {
     const STYLE = ['solid', 'outline', 'striped'];
     const SHAPE = ['diamond', 'oval', 'squiggle'];
@@ -93,6 +106,12 @@
     return [STYLE[styleIndex], SHAPE[shapeIndex], COLOR[colorIndex], COUNT[countIndex]];
   }
 
+  /**
+   * Generates a unique card element based on the specified difficulty.
+   * @param {boolean} isEasy - If true, the "Easy" difficulty is selected,
+   * else "Standard" difficulty.
+   * @return {HTMLElement} The card element with a unique ID and randomly selected attributes.
+   */
   function generateUniqueCard(isEasy) {
     let cardId = generateUniqueCardId(isEasy);
     let [style, shape, color, count] = cardId.split('-');
@@ -105,59 +124,88 @@
       img.src = `img/${style}-${shape}-${color}.png`;
       img.alt = cardId;
       card.appendChild(img);
-	}
-	return card;
+    }
+    return card;
   }
 
+  /**
+   * Generates a unique card ID based on the specified difficulty.
+   * @param {boolean} isEasy - If true, the "Easy" difficulty is selected,
+   * else "Standard" difficulty.
+   * @return {string} A unique card ID with randomly selected attributes.
+   */
   function generateUniqueCardId(isEasy) {
     let unique = false;
     let cardId;
     while (!unique) {
       let attributes = generateRandomAttributes(isEasy);
       cardId = attributes.join('-');
-      if (!document.getElementById(cardId)) {
+      if (!id(cardId)) {
         unique = true;
       }
     }
     return cardId;
   }
 
+
+  /**
+   * Toggles the visibility of the game and menu views.
+   */
   function toggleViews() {
     id('game-view').classList.toggle('hidden');
     id('menu-view').classList.toggle('hidden');
   }
 
+  /**
+   * Starts the game timer and updates the timer display.
+   */
   function startTimer() {
     remainingSeconds = qs("#menu-view article select").value;
     printTImer();
     timerId = setInterval(advanceTimer, ONE_SECOND);
   }
 
+  /**
+   * Advances the game timer by decrementing the remaining seconds.
+   */
   function advanceTimer() {
     remainingSeconds--;
     printTImer();
-    if (remainingSeconds == 0) {
+    if (remainingSeconds === 0) {
       endGame();
     }
   }
 
+  /**
+   * Updates the timer display with the current remaining time.
+   * knowing the pedStart method to reach given length by: https://developer.mozilla.org/en-US/
+   * docs/Web/JavaScript/Reference/Global_Objects/String/padStart
+   */
   function printTImer() {
-    let minutes = Math.floor(remainingSeconds / 60);
-    let seconds = remainingSeconds % 60;
-    qs("#time").textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+	const SEC_IN_MIN = 60;
+    let minutes = Math.floor(remainingSeconds / SEC_IN_MIN);
+    let seconds = remainingSeconds % SEC_IN_MIN;
+    qs("#time").textContent = `0${String(minutes)}:${String(seconds).padStart(2, '0')}`;
   }
 
+  /**
+   * Ends the game by clearing the timer, disabling the "Refresh Board" button,
+   * and removing click event listeners.
+   */
   function endGame() {
     clearInterval(timerId);
     timerId = null;
-	qs("#refresh-btn").disabled = true;
-	let cards = qsa('.card');
-	for (let i = 0; i < cards.length; i++) {
-	  cards[i].removeEventListener('click', cardSelected);
-	  cards[i].classList.remove("selected");
-	}
+    qs("#refresh-btn").disabled = true;
+    let cards = qsa('.card');
+    for (let i = 0; i < cards.length; i++) {
+      cards[i].removeEventListener('click', cardSelected);
+      cards[i].classList.remove("selected");
+    }
   }
 
+  /**
+   * Handles card selection by toggling the "selected" class and checking for valid sets.
+   */
   function cardSelected() {
     this.classList.toggle("selected");
     let selectedCards = Array.from(qsa(".card.selected"));
@@ -170,7 +218,7 @@
       setTimeout(() => {
         for (let i = 0; i < selectedCards.length; i++) {
           selectedCards[i].classList.remove("selected");
-		}
+        }
       }, ONE_SECOND);
     }
   }
@@ -190,15 +238,15 @@
    * @param {Array} selectedCards Array of card that are selected that are set
    */
   function successSelection(selectedCards) {
-	let setCount = id('set-count');
-    setCount.textContent += 1;
+    let setCount = id('set-count');
+    setCount.textContent = parseInt(setCount.textContent) + 1;
     for (let i = 0; i < selectedCards.length; i++) {
-      selectedCards[i].classList.add("hide-imgs");
-      selectedCards[i].innerHTML = `<p>SET!</p>${selectedCards[i].innerHTML}`;
-      resetCard(selectedCards[i]);
-      let whetherEasy = difficultyCheck();
+	  let whetherEasy = difficultyCheck();
       let newCard = generateUniqueCard(whetherEasy);
       selectedCards[i].parentNode.replaceChild(newCard, selectedCards[i]);
+      newCard.classList.add("hide-imgs");
+      snewCard.innerHTML = `<p>SET!</p>${selectedCards[i].innerHTML}`;
+      resetCard(newCard);
     }
   }
 
