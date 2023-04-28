@@ -10,7 +10,7 @@
  */
 "use strict";
 (function() {
-  const ONE_SECOND = 1000；
+  const ONE_SECOND = 1000;
   let timerId = null;
   let remainingSeconds = null;
 
@@ -177,12 +177,20 @@
 	}
   }
 
+  /**
+   * Check whether the selected difficulty is east
+   * @returns true if the selected mode is easy, false if not
+   */
   function difficultyCheck() {
 	console.log("ez?");
 	let difficultyOption = qsa("#menu-view input:checked").value;
 	return difficultyOption === "easy";
   }
 
+  /**
+   * Do following move if the selected cards can be a set. Add up the count and show SET! on cards
+   * @param {Array} selectedCards Array of card that are selected that are set
+   */
   function successSelection(selectedCards) {
 	for (let i = 0; i < selectedCards.length; i++) {
 	  selectedCards[i].classList.add("hide-imgs");
@@ -197,7 +205,7 @@
   }
 
   /**
-   * Do following move if the selected cards cannot be a set.
+   * Do following move if the selected cards cannot be a set. Show Not a Set on the cards
    * @param {Array} selectedCards: Array of card that are selected but are not set
    */
   function failureselection(selectedCards) {
