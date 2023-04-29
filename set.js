@@ -204,6 +204,8 @@
 
   /**
    * Handles card selection by toggling the "selected" class and checking for valid sets.
+   * code from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/
+   * Reference/Global_Objects/Array/from
    */
   function cardSelected() {
     this.classList.toggle("selected");
